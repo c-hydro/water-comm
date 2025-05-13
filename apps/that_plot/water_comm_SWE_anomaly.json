@@ -1,0 +1,55 @@
+{
+  "algorithm": {
+    "flags": {
+      "recompute_SWE": false,
+      "first_water_year_climatology": "2011",
+      "last_water_year_climatology": "now",
+      "relevant_years_to_plot": ["2022","last"],
+      "days_enforce_recomputation": 15
+    },
+    "general": {
+      "title": "Algorithm to compute and plot SWE anomalies",
+      "web-site": "",
+      "source": "Python library developed by CIMA Research Foundation",
+      "history": "1.0.0 [20250331]",
+      "project-info": "Water Comm SWE anomaly tool",
+      "algorithm": "Tools by CIMA Research Foundation"
+    },
+    "template": {
+      "source_gridded_sub_path_time": "%Y/%m/%d/",
+      "source_gridded_datetime": "%Y%m%d%H%M",
+      "outcome_sub_path_time": "%Y/%m/%d",
+      "outcome_datetime": "%Y%m%d%H%M",
+      "region": "string_region"
+    }
+  },
+  "data": {
+    "input_grid" : {
+      "__comment__": "The csv should include the following columns: 'ID', 'Name'; ID is any number. Name is a string",
+      "grid": "/share/s3m-italy/data/static/grid_500m/Bacini_idrografici_principali_0607_500m_WGS84.tif",
+      "areacell": "/share/s3m-italy/data/static/grid_500m/AreaCell_Italy_500m_WGS84geog_v2.tif",
+      "csv_grid_keys": "/share/s3m-italy/data/static/grid_500m/Bacini_idrografici_principali_SELECTION.csv"
+    },
+    "input_SWE_list" : [
+      "/share/s3m-italy/archive/SWE_500m_national_reanalysis/{source_gridded_sub_path_time}/ITSNOW500-SWE_{source_gridded_datetime}00.tif",
+      "/share/s3m-italy/archive/SWE_500m_national_realtime/{source_gridded_sub_path_time}/ITSNOW500-SWE_{source_gridded_datetime}00.tif"
+    ],
+    "__comment__": "the way this list works is that the script wil look for the input file in the first path, than the second etc",
+    "outcome": {
+      "figure": "/share/s3m-italy/comm/SWE_basins/{outcome_sub_path_time}/{region}_{outcome_datetime}.png",
+      "logo": "/share/s3m-italy/data/static/Logo_CIMA.jpg",
+      "csv_SWE_name": "{region}_{source_gridded_datetime}.csv",
+      "__comment__": "the script will first look for the csv file with the already computed value; if it does not exist, it will load the tiff file and compute it again"
+    },
+    "log_folder": "/root/operational/s3m-italy/log/postprocessing/",
+    "log_filename": "SWE_anomaly_basins.txt"
+  },
+  "time": {
+    "time_run": null,
+    "time_start": null,
+    "time_end": null,
+    "time_period": 10,
+    "time_frequency": "D",
+    "time_rounding": "H"
+  }
+}
