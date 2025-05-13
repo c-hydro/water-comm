@@ -1,0 +1,50 @@
+{
+  "algorithm": {
+    "elevation_ranges": {
+      "elevation_range_1": [0, 4000, 100],
+      "elevation_range_2": [500, 3500, 1000]
+    },
+    "percentiles": [10, 25, 50, 75, 90],
+    "general": {
+      "title": "Algorithm to compute anomaly by elevation",
+      "web-site": "",
+      "source": "Python library developed by CIMA Research Foundation",
+      "history": "1.0.0 [20250416]",
+      "project-info": "Water Comm anomaly by elevation tool",
+      "algorithm": "Tools by CIMA Research Foundation"
+    },
+    "template": {
+      "source_gridded_sub_path_time": "%Y/%m/%d/",
+      "source_gridded_datetime": "%Y%m%d%H%M",
+      "outcome_sub_path_time": "%Y/%m/%d",
+      "outcome_datetime": "%Y%m%d%H%M",
+      "tag_range": "tag_range",
+      "tag_region": "tag_region"
+    }
+  },
+  "data": {
+    "input_grid" : {
+      "grid": "/share/s3m-italy/data/static/grid_500m/DEM_Italy_500m_WGS84geog.tif",
+      "regions": "/share/s3m-italy/data/static/grid_500m/Bacini_idrografici_principali_0607_500m_WGS84.tif",
+      "csv_grid_keys": "/share/s3m-italy/data/static/grid_500m/Bacini_idrografici_principali_SELECTION.csv"
+    },
+    "input_list" : [
+      "/share/s3m-italy/archive/SWE_anomaly_maps/{source_gridded_sub_path_time}/SWEAnomalyHistory_{source_gridded_datetime}00.tif"
+    ],
+    "__comment__": "the way this list works is that the script wil look for the input file in the first path, than the second etc",
+    "outcome": {
+      "path_csv": "/share/s3m-italy/comm/SWE_basins/{outcome_sub_path_time}/SWE_anomaly_by_elevation_{tag_range}_{tag_region}_{outcome_datetime}.csv",
+      "path_fig": "/share/s3m-italy/comm/SWE_basins/{outcome_sub_path_time}/SWE_anomaly_by_elevation_{tag_range}_{tag_region}_{outcome_datetime}.png"
+    },
+    "log_folder": "/root/operational/s3m-italy/log/postprocessing/",
+    "log_filename": "SWE_anomaly_by_elevation.txt"
+  },
+  "time": {
+    "time_run": null,
+    "time_start": null,
+    "time_end": null,
+    "time_period": 10,
+    "time_frequency": "D",
+    "time_rounding": "H"
+  }
+}
