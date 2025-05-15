@@ -33,7 +33,7 @@
     ],
     "__comment__": "the way this list works is that the script wil look for the input file in the first path, than the second etc",
     "outcome": {
-      "path": "/share/s3m-italy/archive/SWE_anomaly_maps/{outcome_sub_path_time}/SWEAnomaly{tag_benchmark}_{outcome_datetime}00.tif",
+      "path": "share/tmp/{outcome_sub_path_time}/SWEAnomaly{tag_benchmark}_{outcome_datetime}00.tif",
       "no_data_value": -9999
     },
     "log_folder": "/root/operational/s3m-italy/log/postprocessing/",
