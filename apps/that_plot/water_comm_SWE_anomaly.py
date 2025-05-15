@@ -184,6 +184,13 @@ def main():
         # -------------------------------------------------------------------------------------
         # Management of relevant years to plot
         relevant_years_to_plot = data_settings['algorithm']['flags']['relevant_years_to_plot']
+
+        # we introduce here a small trick to manage changes in water years in case we are processing dates across September 1
+        if any(year == "last" for year in relevant_years_to_plot):
+            if (time_date.month == 8) and (time_date.day == 31):
+                SWE_relevant = None
+        # in other words, if we are processing an August 31 date, we force the recomputation of relevant years
+
         if SWE_relevant is not None:
             logging.info('No need to load again SWE map for relevant years ... ')
         else:
