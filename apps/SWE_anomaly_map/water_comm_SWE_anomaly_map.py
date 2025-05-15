@@ -181,31 +181,38 @@ def main():
         relevant_years_tags = data_settings['algorithm']['flags']['relevant_years_tags']
         for i_year, year in enumerate(relevant_years):
 
-            SWE_anomaly_tmp = (SWE_this_year - SWE_relevant[year]) / SWE_relevant[year] * 100
-            SWE_anomaly_tmp[SWE_relevant[year] < threshold_SWE] = np.nan
-            logging.info(' --> SWE anomaly compared to year ' + str(year) + ' computed')
-            logging.info('Mean anomaly with compared to year ' + str(year) + ' is ' + str(np.nanmean(SWE_anomaly_tmp)))
-            logging.info('Max anomaly with compared to year ' + str(year) + ' is ' + str(np.nanmax(SWE_anomaly_tmp)))
-            logging.info('Q1 anomaly with compared to year ' + str(year) + ' is ' + str(np.nanquantile(SWE_anomaly_tmp, 0.25)))
-            logging.info('Q2 anomaly with compared to year ' + str(year) + ' is ' + str(np.nanquantile(SWE_anomaly_tmp, 0.5)))
-            logging.info('Q3 anomaly with compared to year ' + str(year) + ' is ' + str(np.nanquantile(SWE_anomaly_tmp, 0.75)))
+            try:
 
-            # save map
-            output_dir = data_settings['data']['outcome']['path']
-            tags = {'outcome_sub_path_time': time_date,
-                    'outcome_datetime': time_date,
-                    'tag_benchmark': relevant_years_tags[i_year]}
-            output_dir = fill_tags2string(output_dir, data_settings['algorithm']['template'], tags)
-            layer_out = SWE_anomaly_tmp.astype(np.float32)
-            layer_out[np.isnan(layer_out)] = data_settings['data']['outcome']['no_data_value']
-            layer_out_xr = xr.DataArray(layer_out, dims=['y', 'x'], coords={'y': da_domain_target.lat.values, 'x': da_domain_target.lon.values})
-            layer_out_xr = layer_out_xr.rio.write_crs("EPSG:4326")
-            layer_out_xr = layer_out_xr.rio.write_nodata(data_settings['data']['outcome']['no_data_value'])
-            write_geotiff(layer_out_xr, output_dir)
-            logging.info(" --> SWE anomaly map saved to " + str(output_dir))
+                SWE_anomaly_tmp = (SWE_this_year - SWE_relevant[year]) / SWE_relevant[year] * 100
+                SWE_anomaly_tmp[SWE_relevant[year] < threshold_SWE] = np.nan
+                logging.info(' --> SWE anomaly compared to year ' + str(year) + ' computed')
+                logging.info('Mean anomaly with compared to year ' + str(year) + ' is ' + str(np.nanmean(SWE_anomaly_tmp)))
+                logging.info('Max anomaly with compared to year ' + str(year) + ' is ' + str(np.nanmax(SWE_anomaly_tmp)))
+                logging.info('Q1 anomaly with compared to year ' + str(year) + ' is ' + str(np.nanquantile(SWE_anomaly_tmp, 0.25)))
+                logging.info('Q2 anomaly with compared to year ' + str(year) + ' is ' + str(np.nanquantile(SWE_anomaly_tmp, 0.5)))
+                logging.info('Q3 anomaly with compared to year ' + str(year) + ' is ' + str(np.nanquantile(SWE_anomaly_tmp, 0.75)))
 
-            # creat histogram and save
-            histogram_SWE_deficit(SWE_anomaly_tmp, output_dir, time_date, year)
+                # save map
+                output_dir = data_settings['data']['outcome']['path']
+                tags = {'outcome_sub_path_time': time_date,
+                        'outcome_datetime': time_date,
+                        'tag_benchmark': relevant_years_tags[i_year]}
+                output_dir = fill_tags2string(output_dir, data_settings['algorithm']['template'], tags)
+                layer_out = SWE_anomaly_tmp.astype(np.float32)
+                layer_out[np.isnan(layer_out)] = data_settings['data']['outcome']['no_data_value']
+                layer_out_xr = xr.DataArray(layer_out, dims=['y', 'x'], coords={'y': da_domain_target.lat.values, 'x': da_domain_target.lon.values})
+                layer_out_xr = layer_out_xr.rio.write_crs("EPSG:4326")
+                layer_out_xr = layer_out_xr.rio.write_nodata(data_settings['data']['outcome']['no_data_value'])
+                write_geotiff(layer_out_xr, output_dir)
+                logging.info(" --> SWE anomaly map saved to " + str(output_dir))
+
+                # creat histogram and save
+                histogram_SWE_deficit(SWE_anomaly_tmp, output_dir, time_date, year)
+
+            except Exception as e:
+                logging.error('Error while computing and plotting SWE anomaly compared to year ' + str(year))
+                logging.error(e)
+                continue
 
 # -------------------------------------------------------------------------------------
 # Method to get script argument(s)
