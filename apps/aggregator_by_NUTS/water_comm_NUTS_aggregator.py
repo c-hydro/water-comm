@@ -131,7 +131,8 @@ def main():
                                       coords={'y': lats_target[:,0], 'x': lons_target[0,:]})
         anomaly_map_xr = anomaly_map_xr.rio.write_crs(crs_domain_target)
         column_adm = data_settings['algorithm']['flags']['column_adm']
-        stats_by_nuts = aggregator_by_NUTS(anomaly_map_xr, nuts_gdf, column_adm=column_adm)
+        stats_by_nuts = aggregator_by_NUTS(anomaly_map_xr, nuts_gdf, column_adm=column_adm,
+                                           statistic=data_settings['algorithm']['flags']['statistic'])
         logging.info('Compute statistics by NUTS ... DONE')
         # -------------------------------------------------------------------------------------
 
