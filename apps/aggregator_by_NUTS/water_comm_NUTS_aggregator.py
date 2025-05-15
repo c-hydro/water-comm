@@ -107,7 +107,7 @@ def main():
         # -------------------------------------------------------------------------------------
         # we immediately handle leap years by changing Feb 29 to Feb 28 just in case
         if time_date.month == 2 and time_date.day == 29:
-            time_date = datetime(time_date.year, 2, 28)
+            time_date = datetime(time_date.year, 2, 28, time_date.hour, time_date.minute)
             logging.warning('Leap year detected. Feb 29 changed to Feb 28')
         # -------------------------------------------------------------------------------------
 
