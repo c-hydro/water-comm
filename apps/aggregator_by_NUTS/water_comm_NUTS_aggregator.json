@@ -2,7 +2,8 @@
   "algorithm": {
     "flags": {
       "negative_values_to_zero": false,
-      "column_adm": "SIGLA"
+      "column_adm": "SIGLA",
+      "statistic":"mean"
     },
     "general": {
       "title": "Algorithm to aggregate a raster by NUTS using shapefile",
