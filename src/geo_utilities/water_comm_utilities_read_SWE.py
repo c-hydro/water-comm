@@ -39,9 +39,12 @@ def load_SWE_map(period, high_domain_target, wide_domain_target, path_SWE,
         logging.info('The candidate SWE path is ' + str(selected_path_SWE))
 
         if selected_path_SWE is None:
-            logging.warning('No SWE map found for ' + str(period[i]))
+            if np.size(list_periods) > 1:
+                logging.warning('No SWE map found for ' + str(period[i]))
+            else:
+                logging.warning('No SWE map found for this day')
             SWE_all[i, :, :] = np.zeros((high_domain_target, wide_domain_target)) * np.nan
-            logging.warning(' --> Fill with NaN')
+            logging.warning(' --> Filled with NaN')
         else:
             SWE_tmp = read_file_raster(selected_path_SWE,
                                                   coord_name_x='lon', coord_name_y='lat',
