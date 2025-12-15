@@ -130,6 +130,7 @@ def main():
                                      path_maps.copy(), tags_template, no_data_domain_target, da_domain_target,
                                    negative_values_to_zero=False)
         anomaly_map = np.squeeze(anomaly_map)
+        anomaly_map[anomaly_map == -9999] = np.nan
         logging.info(' --> Load map for ' + str(time_date) + ' ... DONE')
         # -------------------------------------------------------------------------------------
 
