@@ -1,0 +1,47 @@
+{
+  "algorithm": {
+    "flags": {
+      "flag_refit": 0,
+       "flag_10": 1
+    },
+    "general": {
+      "title": "Algorithm to compute SSPI",
+      "web-site": "",
+      "source": "Python library developed by CIMA Research Foundation",
+      "history": "1.0.0 [20260513]",
+      "project-info": "Water Comm sspi calculation",
+      "algorithm": "Tools by CIMA Research Foundation"
+    },
+    "template": {}
+  },
+  "data": {
+    "inputs" : {
+      "gamma_values": "/home/idrologia/share/PhD_GiuliaBlandini_dati/DAO_project/timeseries/gamma_10d_params.csv",
+      "areacell": "/home/idrologia/share/PhD_GiuliaBlandini_dati/DAO_project/statici/AreaCell_Italy_500m_WGS84geog_v2.tif",
+      "realtime_folder":"/share/idrologia/s3m-italy/SWE_500m_national_realtime/",
+      "reanalysis_folder":"/share/idrologia/s3m-italy/SWE_500m_national_reanalysis/",
+      "basins_shp_list": "/home/idrologia/share/PhD_GiuliaBlandini_dati/DAO_project/basin_shape_2/",
+      "basins_combined_shp": "/home/idrologia/share/PhD_GiuliaBlandini_dati/DAO_project/shp_x_SSWEI/AOI_x_SSWEI.shp",
+      "winter_months": [11,12,1,2,3,4,5]
+    },
+      "__comment__": "the way this list works is that the script wil look for the input file in the first path, than the second etc",
+    "outcome": {
+      "csv_path": "/home/idrologia/share/PhD_GiuliaBlandini_dati/DAO_project/sspi_csv/",
+      "folder": "/home/idrologia/share/PhD_GiuliaBlandini_dati/DAO_project/monthly_shp_NEW/",
+      "monthly_maps_folder": "/home/idrologia/share/PhD_GiuliaBlandini_dati/DAO_project/monthly_maps_NEW/"
+
+    },
+    "log_folder": "/home/idrologia/share/PhD_GiuliaBlandini_dati/DAO_project/logging/",
+    "log_filename": "SWE_sspi calculation.txt"
+  },
+  "time": {
+    "time_run": null,
+    "time_start": null,
+    "time_end": null,
+    "time_period": 4,
+    "time_frequency": "MONTH_PERIOD",
+    "time_rounding": "D",
+    "time_start_refit": "2000-01-01",
+    "time_end_refit": "2023-12-31"
+  }
+}
