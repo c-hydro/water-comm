@@ -10,6 +10,7 @@ import logging
 from os.path import join
 from argparse import ArgumentParser
 import os
+from copy import deepcopy
 from time import time, strftime, gmtime
 import pandas
 import numpy as np
@@ -21,8 +22,9 @@ import geopandas as gpd
 import calendar 
 from collections import defaultdict
 from src.json_utilities.water_comm_utilities_json import read_file_json
-from src.time_utilities.water_comm_utilities_time import set_time_new
+from src.time_utilities.water_comm_utilities_time import set_time
 from src.geo_utilities.water_comm_utilities_geo import read_file_raster
+from src.generic_utilities.water_comm_generic_utilities import fill_tags2string
 
 # -------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------
@@ -62,7 +64,7 @@ def main():
 
     logging.info( ' Setting time run...')
     # Organize time run
-    time_run, full_time_range, time_chunks = set_time_new(
+    time_run, full_time_range, time_chunks = set_time(
         time_run_args=time_arg,
         time_run_file=data_settings['time']['time_run'],
         time_run_file_start=data_settings['time']['time_start'],
@@ -73,8 +75,14 @@ def main():
         time_rounding=data_settings['time']['time_rounding'],
         time_reverse=True)
 
+
+    if data_settings['time']['time_period'] > 1:
+
+        full_time_range = pandas.DatetimeIndex([time_run - pandas.DateOffset(months=i) for i in range(data_settings['time']['time_period'])])
+        
     logging.info(f"Time range for SSPI calculation: {full_time_range}")
     logging.info(' Setting time run...DONE')
+
     # -------------------------------------------------------------------------------------
     # -------------------------------------------------------------------------------------
     # Load areacell
@@ -89,19 +97,16 @@ def main():
     # -------------------------------------------------------------------------------------
     logging.info(' --> Load Inputs ... ')
     gamma_csv = data_settings["data"]["inputs"]["gamma_values"]
-    winter_months = data_settings["data"]["inputs"]["winter_months"]
     flag_refit = data_settings["algorithm"]["flags"]["flag_refit"]
     flag_10 = data_settings["algorithm"]["flags"]["flag_10"]
     basin_folder = data_settings["data"]["inputs"]["basins_shp_list"]
     realtime_folder = data_settings["data"]["inputs"]["realtime_folder"]
     reanalysis_folder = data_settings["data"]["inputs"]["reanalysis_folder"]
     basins_combined_shp_path = data_settings["data"]["inputs"]["basins_combined_shp"]
-    output_file_path = data_settings["data"]["outcome"]["csv_path"]
-    output_folder = data_settings["data"]["outcome"]["folder"]
-    monthly_maps_folder = data_settings["data"]["outcome"]["monthly_maps_folder"]
-
-    os.makedirs(monthly_maps_folder, exist_ok=True)
-    os.makedirs(output_folder, exist_ok=True)
+    tags_format = data_settings["template"]
+    # -------------------------------------------------------------------------------------
+    # -------------------------------------------------------------------------------------
+     
     ks_stat = np.nan
 
     if flag_refit==1:
@@ -142,6 +147,17 @@ def main():
     logging.info(' --> Creating timeseries ...')
     
     for time_date in full_time_range:
+
+        tags_filling = {"outcome_sub_path_time": time_date, "outcome_datetime": time_date}
+
+        output_file_path = fill_tags2string(data_settings["data"]["outcome"]["csv_path"],tags_format=tags_format,tags_filling=tags_filling)
+        output_folder = fill_tags2string(data_settings["data"]["outcome"]["folder"],tags_format=tags_format,tags_filling=tags_filling)
+        monthly_maps_folder = fill_tags2string(data_settings["data"]["outcome"]["monthly_maps_folder"],tags_format=tags_format,tags_filling=tags_filling)
+
+        os.makedirs(output_file_path, exist_ok=True)
+        os.makedirs(output_folder, exist_ok=True)
+        os.makedirs(monthly_maps_folder, exist_ok=True)
+
         
         results = defaultdict(list)
         all_sspi = []
@@ -153,7 +169,7 @@ def main():
 
         elif flag_10 == 1:
             period = get_period(time_date)
-            time_range = pandas.date_range( start=time_date - pandas.Timedelta(days=30),end=time_date,freq='D')
+            time_range = pandas.date_range( start=time_date - pandas.Timedelta(days=29),end=time_date,freq='D')
 
         else:
             time_range = pandas.date_range(start=time_date.replace(day=1),end=time_date,freq='D')
@@ -478,6 +494,7 @@ def process(subset, basin, month, val, gamma_df, flag_refit, flag_10):
 
     return tmp
 # -------------------------------------------------------------------------------------
+
 
 
 # -------------------------------------------------------------------------------------
